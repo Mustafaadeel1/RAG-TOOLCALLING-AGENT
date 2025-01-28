@@ -21,45 +21,45 @@ def create_agent(google_api_key):
     )
 
     tools = [
-        Tool.from_function(
-            func=lambda text: text_to_speech.invoke({"text": text}),
+        Tool(
             name="Text2Speech",
-            description="Converts text to speech. Input should be the text to convert."
+            func=text_to_speech.invoke,
+            description="Converts text to speech"
         ),
-        Tool.from_function(
-            func=lambda: speech_to_text.invoke({}),
+        Tool(
             name="Speech2Text",
-            description="Converts speech to text from microphone input. No input required."
+            func=speech_to_text.invoke,
+            description="Converts speech to text"
         ),
-        Tool.from_function(
-            func=lambda image_path: image_to_text.invoke({"image_path": image_path}),
+        Tool(
             name="Image2Text",
-            description="Extracts text from images. Input should be the image file path."
+            func=image_to_text.invoke,
+            description="Extracts text from images"
         ),
-        Tool.from_function(
-            func=lambda expr: Calculator.invoke({"expression": expr}),
+        Tool(
             name="Calculator",
-            description="Solves math expressions starting with '='. Example input: '=2+2'"
+            func=Calculator.invoke,
+            description="Performs mathematical calculations"
         ),
-        Tool.from_function(
-            func=lambda _: fetch_latest_news.invoke({}),
-            name="NewsFetcher",
-            description="Fetches latest headlines. No input required."
+        Tool(
+            name="News",
+            func=fetch_latest_news.invoke,
+            description="Fetches latest news"
         ),
-        Tool.from_function(
-            func=lambda _: get_random_joke.invoke({}),
-            name="JokeGenerator",
-            description="Tells random jokes. No input required."
+        Tool(
+            name="Jokes",
+            func=get_random_joke.invoke,
+            description="Tells random jokes"
         ),
-        Tool.from_function(
-            func=lambda ticker: fetch_stock_data.invoke({"ticker": ticker}),
-            name="StockAnalyzer",
-            description="Gets stock data. Input should be a ticker symbol like 'AAPL'"
+        Tool(
+            name="Stocks",
+            func=fetch_stock_data.invoke,
+            description="Fetches stock market data"
         ),
-        Tool.from_function(
-            func=lambda query: search_everything.invoke({"query": query}),
+        Tool(
             name="WebSearch",
-            description="Searches the web. Input should be search query."
+            func=search_everything.invoke,
+            description="Performs web searches"
         )
     ]
 
@@ -68,7 +68,6 @@ def create_agent(google_api_key):
         llm=llm,
         agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
         verbose=True,
-        handle_parsing_errors="Check your output and try again!",
-        max_iterations=5,
-        early_stopping_method="generate"
+        handle_parsing_errors="Check output formatting! Respond with valid JSON!",
+        max_iterations=10
     )
